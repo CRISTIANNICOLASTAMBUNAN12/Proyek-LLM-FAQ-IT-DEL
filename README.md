@@ -113,7 +113,7 @@ Server akan berjalan di `http://localhost:8000`
 
 <img width="1085" height="944" alt="image" src="https://github.com/user-attachments/assets/4dd6f0a2-8e55-41da-9c06-61063124f5bb" />
 
-<img width="1085" height="954" alt="image" src="https://github.com/user-attachments/assets/bf05b974-d273-446c-b063-92efb785637b" />
+<img width="1075" height="953" alt="image" src="https://github.com/user-attachments/assets/c9cffc74-8146-425a-90d3-adca0dabf854" />
 
 
 
