@@ -2,18 +2,18 @@
 
 Sistem chatbot FAQ berbasis LLM (Large Language Model) untuk Institut Teknologi Del yang menggunakan teknologi RAG (Retrieval-Augmented Generation) dengan model Qwen untuk memberikan jawaban yang akurat dan contextual.
 
-## ✨ Fitur Utama
+## Fitur Utama
 
-- **🧠 RAG-based Architecture**: Menggunakan FAISS vector store untuk pencarian dokumen yang relevan
-- **🚀 Model Qwen 1.5**: Implementasi model language Qwen 1.5-0.5B-Chat untuk generasi jawaban
-- **📄 PDF Processing**: Otomatis memproses dokumen PDF FAQ menjadi knowledge base
-- **🔍 Semantic Search**: Pencarian semantik menggunakan embeddings multilingual
-- **⚡ FastAPI Backend**: API yang cepat dan scalable
-- **🎨 Modern UI**: Interface web yang responsif dan modern
-- **🔧 Error Handling**: Sistem fallback yang robust untuk handling error
-- **💬 Real-time Chat**: Interface chat real-time dengan typing indicator
+- **RAG-based Architecture**: Menggunakan FAISS vector store untuk pencarian dokumen yang relevan
+- **Model Qwen 1.5**: Implementasi model language Qwen 1.5-0.5B-Chat untuk generasi jawaban
+- **PDF Processing**: Otomatis memproses dokumen PDF FAQ menjadi knowledge base
+- **Semantic Search**: Pencarian semantik menggunakan embeddings multilingual
+- **FastAPI Backend**: API yang cepat dan scalable
+- **Modern UI**: Interface web yang responsif dan modern
+- **Error Handling**: Sistem fallback yang robust untuk handling error
+- **Real-time Chat**: Interface chat real-time dengan typing indicator
 
-## 🏗️ Arsitektur Sistem
+## Arsitektur Sistem
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -34,7 +34,7 @@ Sistem chatbot FAQ berbasis LLM (Large Language Model) untuk Institut Teknologi 
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-## 🛠️ Teknologi yang Digunakan
+## Teknologi yang Digunakan
 
 ### Backend
 - **Python 3.8+**
@@ -55,7 +55,7 @@ Sistem chatbot FAQ berbasis LLM (Large Language Model) untuk Institut Teknologi 
 - **Qwen/Qwen1.5-0.5B-Chat**: Model generasi teks
 - **sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2**: Embeddings model
 
-## 📦 Instalasi
+## Instalasi
 
 ### Prerequisites
 - Python 3.8 atau lebih tinggi
@@ -96,7 +96,7 @@ FAISS_DIR = "path/to/your/faiss_index"
 - Place your PDF FAQ document in the specified `PDF_PATH`
 - Pastikan PDF berisi informasi FAQ yang ingin dijadikan knowledge base
 
-## 🚀 Menjalankan Aplikasi
+## Menjalankan Aplikasi
 
 ### 1. Jalankan Backend Server
 ```bash
