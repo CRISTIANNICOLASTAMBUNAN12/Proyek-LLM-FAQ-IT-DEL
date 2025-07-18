@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Del FAQ Chatbot</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            --bot-bubble: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --user-bubble: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-dark: #2c3e50;
+            --text-light: #fff;
+            --text-muted: #6c7293;
+            --surface: rgba(255, 255, 255, 0.95);
+            --surface-alt: rgba(255, 255, 255, 0.1);
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.15);
+            --border-radius: 20px;
+            --animation-speed: 0.3s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background elements */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-shape:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .floating-shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .chat-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 95vh;
+            background: var(--surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        
+        .chat-header {
+            background: var(--primary-gradient);
+            color: var(--text-light);
+            padding: 30px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: shimmer 3s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .chat-header img {
+            height: 50px;
+            margin-right: 20px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            z-index: 1;
+        }
+        
+        .header-title {
+            z-index: 1;
+            position: relative;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f4f8 100%);
+            position: relative;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            max-width: 75%;
+            padding: 20px 25px;
+            border-radius: 25px;
+            line-height: 1.6;
+            font-size: 16px;
+            font-weight: 400;
+            box-shadow: var(--shadow);
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .bot-message {
+            background: var(--surface);
+            color: var(--text-dark);
+            border-bottom-left-radius: 8px;
+            align-self: flex-start;
+            border-left: 4px solid #667eea;
+        }
+        
+        .user-message {
+            background: var(--user-bubble);
+            color: var(--text-light);
+            border-bottom-right-radius: 8px;
+            margin-left: auto;
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+        }
+        
+        .chat-input-container {
+            padding: 25px;
+            background: var(--surface);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        #user-input {
+            flex: 1;
+            padding: 18px 25px;
+            border: none;
+            border-radius: 40px;
+            outline: none;
+            font-size: 16px;
+            font-weight: 400;
+            background: transparent;
+            color: var(--text-dark);
+            transition: all var(--animation-speed);
+        }
+        
+        #user-input::placeholder {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+        
+        #send-button {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            transition: all var(--animation-speed);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        #send-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+        }
+        
+        #send-button:active {
+            transform: scale(0.95);
+        }
+        
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px 25px;
+            gap: 12px;
+            background: var(--surface);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .quick-reply {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--animation-speed);
+            color: var(--text-dark);
+            backdrop-filter: blur(10px);
+        }
+        
+        .quick-reply:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            padding: 20px 25px;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .typing-text {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% { 
+                transform: translateY(0); 
+                opacity: 0.4;
+            }
+            30% { 
+                transform: translateY(-8px); 
+                opacity: 1;
+            }
+        }
+        
+        .time-stamp {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            text-align: right;
+            font-weight: 300;
+        }
+        
+        .source-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(0, 0, 0, 0.2);
+            font-weight: 300;
+        }
+        
+        /* Enhanced scrollbar */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 10px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-gradient);
+        }
+        
+        /* Welcome message styling */
+        .welcome-message {
+            background: var(--surface);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .welcome-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+        
+        .welcome-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .feature-item {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+                max-width: 100%;
+            }
+            
+            .chat-header {
+                font-size: 24px;
+                padding: 20px;
+            }
+            
+            .chat-header img {
+                height: 40px;
+                margin-right: 15px;
+            }
+            
+            .message {
+                font-size: 15px;
+                padding: 15px 20px;
+                max-width: 85%;
+            }
+            
+            .chat-messages {
+                padding: 20px;
+            }
+            
+            .quick-replies {
+                padding: 15px 20px;
+            }
+            
+            .quick-reply {
+                font-size: 13px;
+                padding: 10px 16px;
+            }
+            
+            .welcome-features {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .chat-header {
+                font-size: 20px;
+                padding: 15px;
+            }
+            
+            .message {
+                max-width: 90%;
+                font-size: 14px;
+            }
+            
+            .welcome-message {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-decoration">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+    </div>
+    
+    <div class="chat-container">
+        <div class="chat-header">
+            <span class="header-title">IT Del FAQ Assistant</span>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="welcome-message">
+                <div class="welcome-title">👋 Selamat datang di IT Del FAQ Assistant!</div>
+                <p>Saya siap membantu Anda mendapatkan informasi tentang Institut Teknologi Del. Berikut adalah topik yang bisa saya bantu:</p>
+                <div class="welcome-features">
+                    <div class="feature-item">📚 Informasi Program Studi</div>
+                    <div class="feature-item">📝 Proses Pendaftaran</div>
+                    <div class="feature-item">🎓 Program Beasiswa</div>
+                    <div class="feature-item">🏢 Fasilitas Kampus</div>
+                    <div class="feature-item">💰 Biaya Kuliah</div>
+                    <div class="feature-item">🏆 Akreditasi</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-replies">
+            <button class="quick-reply">📚 Info Jurusan</button>
+            <button class="quick-reply">📝 Pendaftaran</button>
+            <button class="quick-reply">🎓 Beasiswa</button>
+            <button class="quick-reply">🏢 Fasilitas</button>
+            <button class="quick-reply">💰 Biaya Kuliah</button>
+            <button class="quick-reply">🏆 Akreditasi</button>
+            <button class="quick-reply">🚪 Jalur Masuk</button>
+            <button class="quick-reply">📞 Kontak</button>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="chat-input">
+                <input type="text" id="user-input" placeholder="Tanyakan tentang IT Del..." autocomplete="off">
+                <button id="send-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22,2 15,22 11,13 2,9"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8000/ask"; // Sesuaikan dengan URL API Anda
+        
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const quickReplies = document.querySelectorAll('.quick-reply');
+        
+        // Add message to chat
+        function addMessage(text, sender, sources = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(sender + '-message');
+            
+            const timeStamp = document.createElement('div');
+            timeStamp.classList.add('time-stamp');
+            const now = new Date();
+            timeStamp.textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            // Preserve line breaks and format text
+            const formattedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            messageDiv.innerHTML = formattedText;
+            messageDiv.appendChild(timeStamp);
+            
+            // Add source information if available
+            if (sources && sources.length > 0) {
+                const sourceInfo = document.createElement('div');
+                sourceInfo.classList.add('source-info');
+                sourceInfo.innerHTML = `📎 Sumber: ${sources.join(', ')}`;
+                messageDiv.appendChild(sourceInfo);
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        
+        // Smooth scroll to bottom
+        function scrollToBottom() {
+            chatMessages.scrollTo({
+                top: chatMessages.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.classList.add('typing-indicator');
+            typingDiv.id = 'typing-indicator';
+            
+            const typingText = document.createElement('span');
+            typingText.classList.add('typing-text');
+            typingText.textContent = 'IT Del Assistant sedang mengetik';
+            
+            typingDiv.appendChild(typingText);
+            
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('typing-dot');
+                typingDiv.appendChild(dot);
+            }
+            
+            chatMessages.appendChild(typingDiv);
+            scrollToBottom();
+        }
+        
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        // Send question to API
+        async function sendQuestionToAPI(question) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching from API:', error);
+                return {
+                    answer: "🔧 Maaf, terjadi kesalahan saat menghubungi server. Silakan coba lagi nanti atau hubungi admin IT Del.",
+                    sources: []
+                };
+            }
+        }
+        
+        // Process user message
+        async function processUserMessage() {
+            const message = userInput.value.trim();
+            if (message === '') return;
+            
+            // Add user message to chat
+            addMessage(message, 'user');
+            userInput.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Simulate API delay for demo
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Send to API and get response
+                const response = await sendQuestionToAPI(message);
+                
+                // Hide typing indicator
+                hideTypingIndicator();
+                
+                // Add bot response to chat
+                addMessage(response.answer, 'bot', response.sources);
+                
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage("🚫 Maaf, terjadi kesalahan saat memproses pertanyaan Anda. Silakan coba lagi.", 'bot');
+                console.error('Error:', error);
+            }
+        }
+        
+        // Event listeners
+        sendButton.addEventListener('click', processUserMessage);
+        
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                processUserMessage();
+            }
+        });
+        
+        // Enhanced quick reply functionality
+        quickReplies.forEach(button => {
+            button.addEventListener('click', () => {
+                const buttonText = button.textContent.replace(/[📚📝🎓🏢💰🏆🚪📞]/g, '').trim();
+                userInput.value = buttonText;
+                processUserMessage();
+            });
+        });
+        
+        // Auto-focus input
+        userInput.focus();
+        
+        // Enhanced welcome message
+        setTimeout(() => {
+            addMessage("✨ Silakan pilih salah satu topik di bawah atau ketik pertanyaan Anda langsung. Saya siap membantu!", 'bot');
+        }, 1000);
+    </script>
+</body>
+</html>
