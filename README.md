@@ -110,8 +110,10 @@ Server akan berjalan di `http://localhost:8000`
 - Atau setup web server untuk serving static files
 
 ## Screenshot Tampilan System
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b2eb767b-52c4-43eb-a2ad-446b6ba810bf" />
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/3150836b-53cf-4c3e-ba2f-fed1005cf19a" />
+<img width="1085" height="944" alt="image" src="https://github.com/user-attachments/assets/4dd6f0a2-8e55-41da-9c06-61063124f5bb" />
+
+<img width="1085" height="954" alt="image" src="https://github.com/user-attachments/assets/bf05b974-d273-446c-b063-92efb785637b" />
+
 
 
